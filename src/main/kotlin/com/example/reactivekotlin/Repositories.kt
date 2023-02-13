@@ -2,13 +2,14 @@ package com.example.reactivekotlin
 
 import kotlinx.coroutines.flow.Flow
 import org.springframework.data.r2dbc.repository.Query
+import org.springframework.data.repository.kotlin.CoroutineCrudRepository
 import org.springframework.data.repository.reactive.ReactiveCrudRepository
 import org.springframework.stereotype.Repository
 import reactor.core.publisher.Flux
 
 
 @Repository
-interface BreedRepository : ReactiveCrudRepository<Breed, Int> {
+interface BreedRepository : CoroutineCrudRepository<Breed, Int> {
 
     @Query("select * from breed b order by b.name")
     suspend fun findAllCoroutine(): Flow<Breed>
@@ -25,7 +26,7 @@ interface BreedRepository : ReactiveCrudRepository<Breed, Int> {
 }
 
 @Repository
-interface SubBreedRepository : ReactiveCrudRepository<SubBreed, Int> {
+interface SubBreedRepository : CoroutineCrudRepository<SubBreed, Int> {
 
     @Query("select name from sub_breed sb where sb.breed_id = :breedId order by sb.name")
     fun findByBreedId(breedId: Int?): Flow<String?>?

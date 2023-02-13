@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.awaitBody
-import java.util.function.Consumer
 
 @Configuration
 class BreedInitializer {
@@ -24,18 +23,16 @@ class BreedInitializer {
                 response.message.entries.forEach { entry ->
                     val breed = Breed(name = entry.key)
                     val saved = breedRepository.save(breed)
-                        .block()
 
-                    entry.value.forEach(Consumer {
-                        subBreedRepository.save(SubBreed(it, breedId = saved?.id)).block()
-                    })
-
+                    entry.value
+                        .map { subBreedRepository.save(SubBreed(it, breedId = saved?.id)) }
                 }
+
+//                //print
+//                runBlocking {
+//                    breedRepository.findAll().apply { println(it) }
+//                }
             }
 
-            //print
-            breedRepository.findAll().subscribe(System.out::print)
-
         }
-
 }

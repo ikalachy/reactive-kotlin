@@ -22,6 +22,7 @@ class BreedsController(
     private val breedsService: BreedsService,
 ) {
 
+    //TODO: move all api-docs to interface to make this class cleaner
     @Operation(summary = "Retrieves all breeds", description = "Returns 200 if successful")
     @ApiResponses(
         value = [
