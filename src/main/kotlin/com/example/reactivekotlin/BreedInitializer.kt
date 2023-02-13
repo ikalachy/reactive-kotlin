@@ -11,8 +11,6 @@ import java.util.function.Consumer
 @Configuration
 class BreedInitializer {
 
-//    val other: List<SubBreed> = emptyList()
-
     @Bean
     fun initBreeds(breedRepository: BreedRepository, subBreedRepository: SubBreedRepository, webClient: WebClient) =
         ApplicationRunner {
@@ -25,7 +23,8 @@ class BreedInitializer {
 
                 response.message.entries.forEach { entry ->
                     val breed = Breed(name = entry.key)
-                    val saved = breedRepository.save(breed).block()
+                    val saved = breedRepository.save(breed)
+                        .block()
 
                     entry.value.forEach(Consumer {
                         subBreedRepository.save(SubBreed(it, breedId = saved?.id)).block()
@@ -34,22 +33,8 @@ class BreedInitializer {
                 }
             }
 
-//            breedRepository.findAll().subscribe(System.out::println)
-//            val btt1 = breedRepository.findAll().subscribe(Consumer {
-//                println("consuming: $it")
-//            })
-//            val btt2 = subBreedRepository.findAll().subscribe(Consumer {
-//                println("consuming: $it")
-//            })
-//
-//            val btt1 = subBreedRepository.findByBreedId(breedId = 6)?.subscribe(Consumer {
-//                println("consuming custom: $it")
-//            })
-//
-//            runBlocking {
-//                val res = subBreedRepository.findByBreedIdCoroutine(6)
-//                println(res)
-//            }
+            //print
+            breedRepository.findAll().subscribe(System.out::print)
 
         }
 

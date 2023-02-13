@@ -4,6 +4,7 @@ import com.example.reactivekotlin.config.WebConfig
 import com.example.reactivekotlin.services.BreedsService
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.*
+import kotlinx.coroutines.flow.flowOf
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -27,7 +28,7 @@ class BreedsControllerTest(@Autowired private val webClient: WebTestClient) {
     fun setUp() {
         coEvery {
             breedsRepository.findAllCoroutine()
-        } returns listOf<Breed>(aBreed(), anotherBreed())
+        } returns flowOf(aBreed(), anotherBreed())
         coEvery {
             subBreedRepository.findByBreedIdCoroutine(1)
         } returns listOf<String>("subbreed1.1", "subbreed1.2")

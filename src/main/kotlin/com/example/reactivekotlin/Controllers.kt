@@ -7,8 +7,7 @@ import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import kotlinx.coroutines.FlowPreview
-import org.springframework.dao.EmptyResultDataAccessException
-import org.springframework.http.HttpStatus
+import kotlinx.coroutines.flow.Flow
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
@@ -31,7 +30,7 @@ class BreedsController(
     )
     @OptIn(FlowPreview::class)
     @GetMapping("/")
-    suspend fun findAll(): List<Breed> =
+    suspend fun findAll(): Flow<Breed> =
         breedsService.findAllCoroutine()
 
     @Operation(
@@ -69,7 +68,6 @@ class BreedsController(
 
     @ExceptionHandler(Exception::class)
     fun exceptionBreedsHandler(exception: Exception): ResponseEntity<Error> {
-
         when (exception) {
             is Http2Exception -> {
                 when (exception.error().code()) {
@@ -79,7 +77,7 @@ class BreedsController(
                 }
             }
         }
-        return respondWithError(400, Error404(message = "Other error"))
+        return respondWithError(400, Error400(message = "Other error"))
     }
 
     private fun respondWithError(code: Int, error: Error): ResponseEntity<Error> {
