@@ -71,7 +71,7 @@ class BreedsControllerTest(@Autowired private val webClient: WebTestClient) {
     fun `Retrieve image for existing breed without image`() {
         // given
         coEvery { breedsRepository.findByName("retriever") } returns aBreed()
-        coEvery { breedsRepository.updateWithImageUrl(1, any()) } returns aBreed()
+        coEvery { breedsRepository.updateWithImageUrl(1, any()) } returns Unit
 
         this.webClient
             .get()
