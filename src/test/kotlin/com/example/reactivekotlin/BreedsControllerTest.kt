@@ -15,7 +15,13 @@ import org.springframework.test.web.reactive.server.WebTestClient
 
 
 @WebFluxTest(BreedsController::class)
-@Import(WebConfig::class, BreedsController::class, BreedsService::class)
+@Import(
+    WebConfig::class,
+    BreedsController::class,
+    BaseControllerAdvice::class,
+    ResourceWebPropertiesConfig::class,
+    BreedsService::class
+)
 class BreedsControllerTest(@Autowired private val webClient: WebTestClient) {
 
     @MockkBean

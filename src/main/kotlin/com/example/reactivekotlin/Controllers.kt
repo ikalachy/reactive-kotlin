@@ -1,70 +1,34 @@
 package com.example.reactivekotlin
 
+import com.example.reactivekotlin.api.BaseController
 import com.example.reactivekotlin.services.BreedsService
 import io.netty.handler.codec.http2.Http2Exception
-import io.swagger.v3.oas.annotations.Operation
-import io.swagger.v3.oas.annotations.Parameter
-import io.swagger.v3.oas.annotations.responses.ApiResponse
-import io.swagger.v3.oas.annotations.responses.ApiResponses
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.ExceptionHandler
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 
 @RestController
 @RequestMapping("/api/breeds")
 class BreedsController(
-    private val breedsService: BreedsService,
-) {
+    val breedsService: BreedsService,
+) : BaseController {
 
-    //TODO: move all api-docs to interface to make this class cleaner
-    @Operation(summary = "Retrieves all breeds", description = "Returns 200 if successful")
-    @ApiResponses(
-        value = [
-            ApiResponse(responseCode = "200", description = "Successful Operation"),
-        ]
-    )
     @OptIn(FlowPreview::class)
     @GetMapping("/")
-    suspend fun findAll(): Flow<Breed> =
+    override suspend fun findAll(): Flow<Breed> =
         breedsService.findAllCoroutine()
 
-    @Operation(
-        summary = "Retrieves breed by id",
-        description = "Returns 200 if successful",
-    )
-    @ApiResponses(
-        value = [
-            ApiResponse(responseCode = "200", description = "Successful Operation"),
-            ApiResponse(responseCode = "404", description = "Such a breed does not exist"),
-        ]
-    )
     @GetMapping("/{id}")
-    suspend fun findOne(
-        @Parameter(description = "Breed id", example = "1")
+    override suspend fun findOne(
         @PathVariable id: Int
-    ) = breedsService.findByIdCoroutine(id)
+    ): Breed = breedsService.findByIdCoroutine(id)
 
-
-    @Operation(
-        summary = "Retrieves breed image", description = "Returns 200 if successful",
-    )
-    @ApiResponses(
-        value = [
-            ApiResponse(responseCode = "200", description = "Successful Operation"),
-            ApiResponse(responseCode = "404", description = "Such a breed does not exist"),
-        ]
-    )
     @GetMapping("/{breed}/images")
-    suspend fun findImage(
-        @Parameter(description = "Breed name", example = "terrier")
+    override suspend fun findImage(
         @PathVariable breed: String
-    ) = breedsService.findAndSaveImage(breed)
+    ): Image = breedsService.findAndSaveImage(breed)
 
 
     @ExceptionHandler(Exception::class)

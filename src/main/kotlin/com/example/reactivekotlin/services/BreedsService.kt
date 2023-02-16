@@ -1,6 +1,9 @@
 package com.example.reactivekotlin.services
 
-import com.example.reactivekotlin.*
+import com.example.reactivekotlin.Breed
+import com.example.reactivekotlin.BreedRepository
+import com.example.reactivekotlin.Image
+import com.example.reactivekotlin.SubBreedRepository
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -13,14 +16,14 @@ import org.springframework.web.reactive.function.client.awaitBody
 class BreedsService(
     val breedsRepository: BreedRepository,
     val subBreedRepository: SubBreedRepository,
-    val webClient: WebClient
+    val webClient: WebClient,
 ) {
     @FlowPreview
-    suspend fun findAllCoroutine(): Flow<Breed> {
-        return breedsRepository
+    suspend fun findAllCoroutine(): Flow<Breed> =
+        breedsRepository
             .findAllCoroutine()
             .map { loadRelationsCoroutine(it) }
-    }
+
 
     suspend fun findByIdCoroutine(id: Int): Breed {
         val breed = breedsRepository.findByIdCoroutine(id)
